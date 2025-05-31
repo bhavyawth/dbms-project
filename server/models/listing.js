@@ -55,8 +55,8 @@ const listingSchema = new Schema({
     default: true,
   },
 
-  listedBy: {
-    type: mongoose.Schema.Types.ObjectId,
+  owner: {
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
@@ -66,5 +66,4 @@ const listingSchema = new Schema({
 });
 
 const Listing = model('Listing', listingSchema);
-
-export default Listing;
+module.exports = Listing;

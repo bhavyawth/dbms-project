@@ -4,7 +4,7 @@ const { connectToMongoDb } = require('./config/connection');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
-//const listingRoutes = require('./routes/listingRoutes');
+const listingRoutes = require('./routes/listingRoutes');
 
 
 connectToMongoDb('mongodb://127.0.0.1:27017/rentngo')
@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use("/api/auth", authRoutes);
-//app.use("/api/listing", listingRoutes);
+app.use("/api/listing", listingRoutes);
 
 
 app.listen(PORT, () => {

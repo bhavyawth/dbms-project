@@ -3,7 +3,6 @@ const { generateToken } = require('../services/authService');
 
 const handleUserLogin = async (req, res) => {
   const { username, password } = req.body;
-
   try {
     const user = await User.findOne({ username });
 
