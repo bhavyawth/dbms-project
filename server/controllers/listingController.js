@@ -4,7 +4,7 @@ const createListing = async (req, res) => {
   const { 
     title, 
     description, 
-    owner, price, 
+    price, 
     address, 
     bedrooms, 
     bathrooms, 
@@ -107,6 +107,30 @@ const getMyListings = async (req, res) => {
   }
 }
 
+const handleUploadImages = async (req, res) => {
+  const listingId = req.params.id;
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ success: false, message: "No images uploaded" });
+  }
+
+  if (!listingId) {
+    return res.status(400).json({ success: false, message: "Listing ID is required" });
+  }
+
+  const imagePaths = req.files.map(file => `/images/${listingId}/${file.filename}`);
+  try {
+    const listing = await Listing.findByIdAndUpdate(
+      listingId, 
+      { $push: { images: { $each: imagePaths } }},
+      { new: true }
+    );
+    res.status(200).json({ success: true, listing });
+  } catch (err) {
+    console.error("Uplaod images error: ", err.message);
+    res.status(500).json({ success: false, message: "Internal server Error" });
+  }
+}
+
 module.exports = {
   createListing,
   getAllListings,
@@ -114,4 +138,5 @@ module.exports = {
   updateListingById,
   deleteListingById,
   getMyListings,  
+  handleUploadImages,
 }

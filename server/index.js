@@ -1,12 +1,14 @@
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
 const { connectToMongoDb } = require('./config/connection');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const listingRoutes = require('./routes/listingRoutes');
 
-
+//connection to db:
 connectToMongoDb('mongodb://127.0.0.1:27017/rentngo')
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB:', err));
