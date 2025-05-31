@@ -1,5 +1,5 @@
 # Node modules folder
-/node_modules/
+server/node_modules/
 
 # Environment variables file (keep your secrets safe)
 .env
@@ -15,6 +15,6 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# Public uploaded images (optional: if you don't want to commit user uploads)
-public/images/
+# Public uploaded images
+server/public/images/
 
