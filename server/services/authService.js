@@ -1,5 +1,4 @@
 const JWT = require('jsonwebtoken');
-const secret = 'Bhavya@9090'; //secret key hai
 
 const generateToken = (user) => {
   const payload = {
@@ -9,7 +8,7 @@ const generateToken = (user) => {
     email: user.email,
     role: user.role,
   };
-  return JWT.sign(payload, secret, { expiresIn: '1h' });
+  return JWT.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.EXPIRATION || '1h' });
 }
 const verifyToken = (token) => {
   try {

@@ -1,27 +1,30 @@
 const express = require('express');
 const path = require('path');
-const multer = require('multer');
-const fs = require('fs');
-const { connectToMongoDb } = require('./config/connection');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
+
+//routes:
 const authRoutes = require('./routes/authRoutes');
 const listingRoutes = require('./routes/listingRoutes');
 
 //connection to db:
-connectToMongoDb('mongodb://127.0.0.1:27017/rentngo')
+const { connectToMongoDb } = require('./config/connection');
+connectToMongoDb(process.env.MONGODB_URL || 'mongodb://localhost:27017/rentngo')
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
+
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors({
     origin:"http://localhost:5173",
     credentials:true
 }));
 
-app.use(express.urlencoded({ extended: true }));
+//middlewares:
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

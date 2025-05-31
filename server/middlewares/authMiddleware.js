@@ -2,10 +2,6 @@ const { verifyToken } = require("../services/authService");
 
 function protectedRoute(cookieName) {
   return (req, res, next) => {
-    if (req.path === '/login' || req.path === '/signup') {
-      return next();
-    }
-
     const token = req.cookies[cookieName];
     if (!token) {
       return res.status(401).json({ success: false, message: 'No token provided. Unauthorized.' });
