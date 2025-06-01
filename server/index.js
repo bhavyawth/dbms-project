@@ -10,7 +10,10 @@ const listingRoutes = require('./routes/listingRoutes');
 
 //connection to db:
 const { connectToMongoDb } = require('./config/connection');
-connectToMongoDb(process.env.MONGODB_URL || 'mongodb://localhost:27017/rentngo')
+connectToMongoDb(process.env.MONGODB_URL , {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB:', err));
 
@@ -24,7 +27,7 @@ app.use(cors({
 }));
 
 //middlewares:
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

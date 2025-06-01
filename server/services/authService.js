@@ -1,6 +1,7 @@
 const JWT = require('jsonwebtoken');
 
 const generateToken = (user) => {
+
   const payload = {
     _id: user._id,
     username: user.username,
@@ -12,7 +13,7 @@ const generateToken = (user) => {
 }
 const verifyToken = (token) => {
   try {
-    return JWT.verify(token, secret);
+    return JWT.verify(token, process.env.JWT_SECRET);
   } catch (error) {
     return null;
   }
