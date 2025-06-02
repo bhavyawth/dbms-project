@@ -3,9 +3,9 @@ const { generateToken } = require('../services/authService');
 
 const handleUserLogin = async (req, res) => {
   const { username, password } = req.body;
+
   try {
     const user = await User.findOne({ username });
-
     if (!user) {
       return res.status(401).json({ success: false, message: 'Incorrect Username or Password❕' });
     }
@@ -38,7 +38,7 @@ const handleUserLogin = async (req, res) => {
 
 const handleUserSignup = async (req, res) => {
   const { username, password, email, phone, role } = req.body;
-
+  console.log(req.body)
   try {
     const user = await User.create({
       username,
@@ -50,7 +50,7 @@ const handleUserSignup = async (req, res) => {
 
     return res.status(200).json({
     success: true,
-    message: 'Login successful',
+    message: 'Signup successful',
     user: {
       username: user.username,
       email: user.email,
@@ -67,13 +67,21 @@ const handleUserSignup = async (req, res) => {
 };
 
 const handleUserLogout = (req, res) => {
-  res.clearCookie('token');
-  req.user = null;
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // only true in prod HTTPS
+    sameSite: 'lax',
+  });
+
+  console.log("User logged out");
+    req.user = null;
+
   return res.status(200).json({
     success: true,
     message: 'Logout successful',
   });
 };
+
 
 const checkAuth = (req, res) => {
   try {

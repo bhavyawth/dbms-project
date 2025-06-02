@@ -49,7 +49,7 @@ const getListingById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate('owner', 'username email');
     if (!listing) return res.status(404).json({ message: "Listing not found" });
     res.status(200).json({ success: true, listing });
   } catch (err) {
@@ -97,6 +97,7 @@ const deleteListingById = async (req, res) => {
 
 const getMyListings = async (req, res) => {
   const userId = req.user._id;
+
   try {
     const myListings = await Listing.find({ owner: userId }).populate('owner', 'username email');
     if (!myListings || myListings.length === 0) {

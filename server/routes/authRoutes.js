@@ -16,6 +16,6 @@ router.post('/signup', handleUserSignup);
 
 router.get('/check', protectedRoute('token'), checkAuth); 
 
-router.post('/logout', protectedRoute('token'), handleUserLogout);
+router.post('/logout', handleUserLogout);
 
 module.exports = router;
