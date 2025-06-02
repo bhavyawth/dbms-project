@@ -11,6 +11,7 @@ const {
   deleteListingById,
   getMyListings,
   handleUploadImages,
+  getListingsByLocation,
 } = require('../controllers/listingController');
 
 
@@ -41,6 +42,8 @@ router.get('/', getAllListings);
 //alag se upar cause conflicts with /:id
 router.get('/my', protectedRoute('token'), getMyListings);
 
+router.get('/search', getListingsByLocation);
+
 router.get('/:id', getListingById);
 
 //protect
@@ -51,5 +54,7 @@ router.post('/:id/upload', protectedRoute('token'), upload.array('images', 5), h
 router.put('/:id', protectedRoute('token'), updateListingById);
 
 router.delete('/:id', protectedRoute('token'), deleteListingById);
+
+
 
 module.exports = router;

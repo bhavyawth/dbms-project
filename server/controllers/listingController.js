@@ -1,6 +1,9 @@
 const Listing = require('../models/listing');
 
 const createListing = async (req, res) => {
+  if (req.user.role !== 'owner') {
+    return res.status(403).json({ success: false, message: "Only owners can create listings" });
+  }
   const { 
     title, 
     description, 
@@ -10,7 +13,6 @@ const createListing = async (req, res) => {
     bathrooms, 
     balcony, 
     images } = req.body;
-
     try {
       const listing = await Listing.create({
         title,
@@ -131,6 +133,21 @@ const handleUploadImages = async (req, res) => {
   }
 }
 
+const getListingsByLocation = async (req, res) => {
+  const { location } = req.query;
+
+  if (!location) {
+    return res.status(400).json({ success: false, message: "Street is required in query" });
+  }
+  try {
+    const listings = await Listing.find({ 'address.street': { $regex: location, $options: 'i' } });
+    res.status(200).json({ success: true, listings });
+  } catch (err) {
+    console.error("Get Listings By Street Error:", err.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createListing,
   getAllListings,
@@ -139,4 +156,5 @@ module.exports = {
   deleteListingById,
   getMyListings,  
   handleUploadImages,
+  getListingsByLocation,
 }
