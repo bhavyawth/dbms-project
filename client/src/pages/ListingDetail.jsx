@@ -16,12 +16,14 @@ const ListingDetail = () => {
   const { id } = useParams();
   const [listing, setListing] = useState(null);
   const [showOwner, setShowOwner] = useState(false);
+  const [mainImage, setMainImage] = useState(null);
 
   useEffect(() => {
     async function fetchListing() {
       try {
         const res = await axios.get(`http://localhost:3000/api/listing/${id}`);
         setListing(res.data.listing);
+        setMainImage(res.data.listing.images?.[0]); // set main image
       } catch (error) {
         console.error("Error fetching listing:", error);
       }
@@ -44,29 +46,41 @@ const ListingDetail = () => {
     owner,
   } = listing;
 
+  // Helper function to get full image URL
+  const getImageUrl = (img) => {
+    if (!img) return "";
+    return img.startsWith("http") || img.startsWith("https")
+      ? img
+      : `http://localhost:3000/${img}`;
+  };
+
   return (
     <div className="min-h-screen bg-[#0e0f11] text-white p-6 sm:p-12 font-sans">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
-        
-        {/* Left photo */}
+        {/* Left photo with scrollable thumbnails + click to swap */}
         <div
           className="md:w-[70%] rounded-2xl overflow-hidden shadow-lg flex-shrink-0"
           style={{ height: "600px" }}
         >
+          {/* Main image */}
           <img
-            src={images?.[0] || "https://via.placeholder.com/900x600?text=No+Image"}
-            alt={title}
-            className="w-full h-full object-cover"
+            src={getImageUrl(mainImage || images[0])}
+            alt="Main Listing"
+            className="w-full h-[75%] object-cover rounded-t-2xl"
           />
-          {/* Extra images below */}
+
+          {/* Scrollable thumbnails */}
           {images?.length > 1 && (
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              {images.slice(1).map((img, idx) => (
+            <div className="flex gap-4 overflow-x-auto p-4 bg-[#1c1d1f] h-[25%]">
+              {images.map((img, idx) => (
                 <img
                   key={idx}
-                  src={img}
-                  alt={`extra-${idx}`}
-                  className="w-full h-24 object-cover rounded-xl"
+                  src={getImageUrl(img)}
+                  alt={`thumb-${idx}`}
+                  className={`h-24 w-32 object-cover rounded-xl cursor-pointer transition-transform duration-300 hover:scale-105 ${
+                    img === mainImage ? "ring-4 ring-blue-500" : ""
+                  }`}
+                  onClick={() => setMainImage(img)}
                 />
               ))}
             </div>
@@ -134,10 +148,12 @@ const ListingDetail = () => {
 };
 
 const InfoCard = ({ icon, label, value }) => (
-  <div className="bg-[#2a2d30] p-4 rounded-xl flex items-center gap-4 hover:scale-105 transition-transform cursor-default select-none">
-    <div className="text-white">{icon}</div>
-    <div>
-      <p className="text-white font-semibold text-lg">{value}</p>
+  <div className="bg-[#2a2d30] p-4 rounded-xl flex items-start gap-4 hover:scale-105 transition-transform cursor-default select-none w-full">
+    <div className="text-white flex-shrink-0">{icon}</div>
+    <div className="flex flex-col w-full min-w-0">
+      <p className="text-white font-semibold text-lg break-words whitespace-normal">
+        {value}
+      </p>
       <p className="text-gray-400 text-sm">{label}</p>
     </div>
   </div>

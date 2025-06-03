@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-// Predefined fallback house images
+// Predefined fallback house images (full URLs, so no prefix needed)
 const fallbackImages = [
   "https://images.unsplash.com/photo-1572120360610-d971b9d7767c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aG91c2V8ZW58MHx8MHx8fDA%3D",
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
@@ -24,12 +24,17 @@ const ListingCard = ({ listing, index }) => {
     images,
   } = listing;
 
-  // Use first image if exists, else pick a fallback image based on index
-  const displayImage = images?.length > 0
-    ? images[0]
-    : fallbackImages[index % fallbackImages.length];
+  // Use first image if exists, else fallback image
+  // If image is local (relative path), prefix it with server URL
+  const displayImage =
+    images?.length > 0
+      ? images[0].startsWith("http")
+        ? images[0]
+        : `http://localhost:3000/${images[0]}`
+      : fallbackImages[index % fallbackImages.length];
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   return (
     <div className="backdrop-blur-md bg-white/5 border border-white/10 shadow-lg hover:shadow-xl rounded-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.02] text-white font-sans">
       {/* Image Section */}
@@ -66,11 +71,15 @@ const ListingCard = ({ listing, index }) => {
 
         <div className="flex justify-between text-sm pt-2">
           <div>
-            <span className="text-green-400 font-semibold">₹{price.toLocaleString()}</span>
+            <span className="text-green-400 font-semibold">
+              ₹{price.toLocaleString()}
+            </span>
             <div className="text-xs text-gray-400">Rent</div>
           </div>
           <div>
-            <span className="text-yellow-300 font-semibold">{address?.state || "N/A"}</span>
+            <span className="text-yellow-300 font-semibold">
+              {address?.state || "N/A"}
+            </span>
             <div className="text-xs text-gray-400">State</div>
           </div>
         </div>

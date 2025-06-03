@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 // Predefined fallback house images
 const fallbackImages = [
@@ -26,9 +25,12 @@ const ListingCard = ({ listing, index, onDelete, onEdit }) => {
     _id
   } = listing;
 
-  const displayImage = images?.length > 0
-    ? images[0]
-    : fallbackImages[index % fallbackImages.length];
+  const displayImage =
+    images?.length > 0
+      ? images[0].startsWith("http")
+        ? images[0]
+        : `http://localhost:3000/${images[0]}`
+      : fallbackImages[index % fallbackImages.length];
 
   const navigate = useNavigate();
 

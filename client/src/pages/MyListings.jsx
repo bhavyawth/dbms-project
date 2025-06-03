@@ -105,7 +105,7 @@ export default function MyListings() {
         });
         setListings(res.data.listings);
       } catch (error) {
-        setError("Failed to fetch listings");
+        setError("No listings found");
       } finally {
         setLoading(false);
       }
